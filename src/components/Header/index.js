@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import { AppBar, Button, Divider, Drawer, Hidden, IconButton, List, ListItem, ListItemText, Toolbar, Typography } from '@material-ui/core/';
@@ -27,47 +27,14 @@ const useStyles = makeStyles((theme) => ({
 const Header = () => {
   const classes = useStyles();
 
-  const [state, setState] = React.useState({
-    menuBtn: false,
+  const [state, setState] = useState({
+    drawerIsOpen: false,
   });
-
-  const toggleDrawer = (anchor, open) => event => {
-    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
-      return;
-    }
-    setState({ ...state, [anchor]: open });
-  };
-
-  const list = (anchor) => (
-    <div
-      className={clsx(classes.list, {
-        [classes.fullList]: anchor === 'top' || anchor === 'bottom',
-      })}
-      role="presentation"
-      onClick={toggleDrawer(anchor, false)}
-      onKeyDown={toggleDrawer(anchor, false)}
-    >
-      <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <List>
-        {['All mail', 'Trash', 'Spam'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
-      </List>
-    </div>
-  );
 
 
   // NOTE: Need to complete "Temporary Drawer" (Material UI)
 
+  // https://stackoverflow.com/questions/48780908/combine-an-appbar-with-a-drawer-in-material-ui
 
 
   return (
@@ -83,15 +50,23 @@ const Header = () => {
             <Button color="inherit" component={Link} to="/services">Services</Button>
           </Hidden>
           <Hidden smUp>
-            <IconButton onClick={toggleDrawer(anchor, true)} edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+            <IconButton onClick={() => setState({ drawerIsOpen: true })} edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
               <MenuIcon />
             </IconButton>
           </Hidden>
-          <Drawer anchor={anchor} open={state[anchor]} onClose={toggleDrawer(anchor, false)}>
-            {list(anchor)}
-          </Drawer>
 				</Toolbar>
 			</AppBar>
+      <Drawer
+        variant="persistent"
+        classes={{
+          paper: classes.drawerPaper,
+        }}
+        open={}
+      >
+        <div className={classes.drawerInner}>
+          <p>drawer content</p>
+        </div>
+      </Drawer>
     </div>
   );
 }
